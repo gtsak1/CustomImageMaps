@@ -158,6 +158,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     SharedPreferences.Editor editor_SignOut;
 
     Uri profileImageUri;
+                
+    boolean justSignedUp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -173,6 +175,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         if (user == null)
             mPresenter.getUser(mReference, mAuth);
+            
+        if (getIntent().getExtras() != null)
+            justSignedUp = getIntent().getExtras().getBoolean("sign_up");
 
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -231,7 +236,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         changeCompassPosition(mMapView, this);
 
         try {
-            mGoogleMap.moveCamera(Objects.requireNonNull(ZoomBounds(this, mUserList, 80)));
+            if (justSignedUp)
+                new Handler().postDelayed(() -> mGoogleMap.moveCamera(Objects.requireNonNull(ZoomBounds(this, mUserList, 80))), 4500);
+            else
+                mGoogleMap.moveCamera(Objects.requireNonNull(ZoomBounds(this, mUserList, 80)));
         } catch (Exception e) {
             e.printStackTrace();
         }

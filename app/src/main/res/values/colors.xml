@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#101892</color>
+    <color name="colorPrimaryDark"> #2d3270 </color>
+    <color name="colorAccent">#D81B60</color>
+    <color name="edittext">#0099dd</color>
+    <color name="purple_fullscreen">#953553</color>
+    <color name="background_color">#eff7ff</color>
+    <color name="red">#FF0000</color>
+    <color name="green">#00FF00</color>
+    <color name="image_border">#0c418f</color>
+</resources>

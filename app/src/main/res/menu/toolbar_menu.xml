@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_visible"
+        android:title="@string/visibility"
+        android:icon="@drawable/ic_baseline_visibility_24"
+        app:showAsAction="always"
+        />
+
+    <item
+        android:id="@+id/menu_edit_profile"
+        android:title="@string/edit_profile"
+        android:icon="@drawable/ic_edit"
+        app:showAsAction="always"
+        />
+
+    <item
+        android:id="@+id/menu_delete_account"
+        android:title="@string/delete_account"
+        app:showAsAction="never"
+        />
+
+    <item
+        android:id="@+id/menu_log_out"
+        android:title="@string/log_out"
+        app:showAsAction="never"
+        />
+
+</menu>

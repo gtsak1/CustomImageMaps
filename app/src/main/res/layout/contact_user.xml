@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/mail_lin"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/ripple_effect3"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="12dp"
+        android:weightSum="1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <ImageView
+            android:id="@+id/mailimage"
+            android:layout_width="0dp"
+            android:layout_height="55dp"
+            android:layout_weight="0.2"
+            android:layout_marginEnd="8dp"
+            app:srcCompat="@drawable/ic_email" />
+
+
+        <TextView
+            android:layout_weight="0.8"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:id="@+id/mail_text"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:layout_gravity="center"
+            android:textSize="19sp"
+            android:text="@string/apostoli_mail"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/phone_lin1"
+        app:layout_constraintTop_toBottomOf="@+id/mail_lin"
+        android:background="@drawable/ripple_effect3"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="12dp"
+        android:weightSum="1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="55dp"
+            android:layout_weight="0.2"
+            android:layout_marginEnd="8dp"
+            app:srcCompat="@drawable/ic_phone" />
+
+
+        <TextView
+            android:id="@+id/phone_text1"
+            android:layout_weight="0.8"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:layout_gravity="center"
+            android:textSize="19sp"
+            android:text="690484"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

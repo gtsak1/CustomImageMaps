@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+    <TextView
+
+        android:layout_marginTop="2dp"
+        android:id="@+id/tv0_map_infoW"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        android:textColor="@color/design_default_color_on_secondary"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="LastName FirstName" />
+
+    <TextView
+        android:layout_marginTop="5dp"
+        android:id="@+id/tv1_map_infoW"
+        android:textSize="17sp"
+        android:textColor="@color/design_default_color_on_secondary"
+        app:layout_constraintTop_toBottomOf="@+id/tv0_map_infoW"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Marker Snippet" />
+
+
+    <TextView
+        android:layout_marginTop="2dp"
+        android:id="@+id/more"
+        android:textSize="16sp"
+        android:textColor="#0099dd"
+        app:layout_constraintTop_toBottomOf="@+id/tv1_map_infoW"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/more" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

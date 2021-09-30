@@ -159,8 +159,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     Uri profileImageUri;
 
-    boolean justSignedUp;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -172,9 +170,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         storageReference = FirebaseStorage.getInstance().getReference().child(Config.USER_NODE);
 
         user = (User) getIntent().getSerializableExtra("user");
-
-        if (getIntent().getExtras() != null)
-            justSignedUp = getIntent().getExtras().getBoolean("sign_up");
 
         if (user == null)
             mPresenter.getUser(mReference, mAuth);
@@ -236,10 +231,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         changeCompassPosition(mMapView, this);
 
         try {
-            if (justSignedUp)
-                new Handler().postDelayed(() -> mGoogleMap.moveCamera(Objects.requireNonNull(ZoomBounds(this, mUserList, 80))), 4500);
-            else
-                mGoogleMap.moveCamera(Objects.requireNonNull(ZoomBounds(this, mUserList, 80)));
+            mGoogleMap.moveCamera(Objects.requireNonNull(ZoomBounds(this, mUserList, 80)));
         } catch (Exception e) {
             e.printStackTrace();
         }

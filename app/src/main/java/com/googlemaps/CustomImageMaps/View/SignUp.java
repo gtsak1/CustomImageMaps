@@ -354,7 +354,6 @@ public class SignUp extends AppCompatActivity implements UserContract.View, Bott
         Intent myIntent;
         myIntent = new Intent(this, intentClass);
         myIntent.putExtra("user", user);
-        myIntent.putExtra("sign_up", true);
         startActivity(myIntent);
         overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
     }

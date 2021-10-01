@@ -312,7 +312,6 @@ public class UserInteractor implements UserContract.Interactor {
 
     @Override
     public void performDeleteUser(Context context, DatabaseReference reference, User user, StorageReference storageReference, FirebaseAuth mAuth) {
-        mListener.onStart();
         if (user.getImage_Url() != null) {
             storageReference.getStorage().getReferenceFromUrl(user.getImage_Url()).delete()
                 .addOnSuccessListener(aVoid -> Log.d("DeleteUserImage", "onSuccess: deleted user image from storage"))

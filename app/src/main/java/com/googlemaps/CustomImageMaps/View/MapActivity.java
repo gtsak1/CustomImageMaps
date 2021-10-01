@@ -158,8 +158,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     SharedPreferences.Editor editor_SignOut;
 
     Uri profileImageUri;
-                
-    boolean justSignedUp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,9 +173,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         if (user == null)
             mPresenter.getUser(mReference, mAuth);
-            
-        if (getIntent().getExtras() != null)
-            justSignedUp = getIntent().getExtras().getBoolean("sign_up");
 
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -236,10 +231,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         changeCompassPosition(mMapView, this);
 
         try { //move camera accordingly to all users locations
-            if (justSignedUp)
-                new Handler().postDelayed(() -> mGoogleMap.moveCamera(Objects.requireNonNull(ZoomBounds(this, mUserList, 80))), 4500);
-            else
-                mGoogleMap.moveCamera(Objects.requireNonNull(ZoomBounds(this, mUserList, 80)));
+            new Handler().postDelayed(() -> mGoogleMap.moveCamera(Objects.requireNonNull(ZoomBounds(this, mUserList, 80))), 4500);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -460,7 +452,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         ConfigChange();
 
     }
-    private void ConfigChange() { //determine what happens when changing screen orientation. The screen must be split in two the same way in both cases(constraintlayout guidelines are used for that reason) 
+    private void ConfigChange() { //determine what happens when changing screen orientation. The screen must be split in two the same way in both cases(constraintlayout guidelines are used for that reason)
         ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) con2.getLayoutParams();
         ConstraintLayout.LayoutParams params2 = (ConstraintLayout.LayoutParams) listes.getLayoutParams();
 
@@ -505,22 +497,30 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         startService(intentSrv);
     }
 
-    private void ConfirmDialog(int action, String title, String message) {     //dialog for updating user Visibility or deleteing account
+    private void ConfirmDialog(int action, String title, String message) {     //dialog for updating user Visibility or deleting account
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         final AlertDialog dial = builder.setMessage(message)
                 .setCancelable(true)
                 .setTitle(title)
                 .setPositiveButton(R.string.yes, (dialog, id) -> {
-                    if (action == 0)
+                    if (action == 0)                    //update user visibility status
                         mPresenter.UpdateUserVisibilityStatus(this, mReference, user.getId(), false);
-                    else if (action == 1) {
+                    else if (action == 1) {             //(action for delete) unregister coordinates receiver and finish the activity
                         try {
                             LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
                         } catch (IllegalStateException e) {
                             e.printStackTrace();
                         }
-                        mPresenter.DeleteUser(this, mReference, user, storageReference, mAuth);
+                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            super.finishAndRemoveTask();
+                        }
+                        else {
+                            super.finish();
+                        }
+                        Intent intent = new Intent(this, DeleteAccountActivity.class);
+                        intent.putExtra("user", user);
+                        startActivity(intent);
                     }
                 })
                 .setNegativeButton(R.string.no, (dialog, id) -> dialog.dismiss()).create();
@@ -608,7 +608,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         else if (requestCode == SELECT_PHOTO && resultCode == RESULT_OK && data != null && data.getData() != null){
 
             try {
-                profileImageUri = data.getData();   //getting selected image file from storage and... 
+                profileImageUri = data.getData();   //getting selected image file from storage and...
                 setImage(this, profilePic, profileImageUri);//...applying it to imageview
                 remove_photo.setVisibility(View.VISIBLE);
             } catch (Exception e) {
@@ -721,6 +721,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     CircleImageView profilePic; TextView remove_photo; boolean remove_photo_clicked;
     EditText firstname, lastname, phone; View alertDialogView;
     private void UpdateUser(int position) {
+        remove_photo_clicked = false;
         LayoutInflater layoutInflaterAndroid = LayoutInflater.from(this);
         alertDialogView = layoutInflaterAndroid.inflate(R.layout.edit_profile_dialog, null);
 
@@ -873,8 +874,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         dial.show();
     }
 
-    //this function creates or updates custom bubble shaped map markers with user's image(image is set using Glide library)            
-    private void GlideForMarker(User user, boolean shouldUpdate, int updatePosition) { 
+    //this function creates or updates custom bubble shaped map markers with user's image(image is set using Glide library)
+    private void GlideForMarker(User user, boolean shouldUpdate, int updatePosition) {
         try {
             Object image_url;
             String noImageText;
@@ -973,7 +974,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         //update names
                         marker_arraylist_names.get(i).setPosition(new LatLng(user.getLatitude(), user.getLongitude()));
                         marker_arraylist_names.get(i).setIcon(createMarkerUserName(this, user.getlName() + " " + user.getfName().substring(0, 1) + ".",
-                                        mGoogleMap.getMapType() == GoogleMap.MAP_TYPE_HYBRID));
+                                mGoogleMap.getMapType() == GoogleMap.MAP_TYPE_HYBRID));
 
                         //update visibility
                         marker_arraylist_names.get(i).setVisible(user.isVisible() && user.isLoggedIn());
@@ -989,7 +990,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
-    private void ZoomInUser(int position) {  //zoom to the specific user location and show marker infoWindow 
+    private void ZoomInUser(int position) {  //zoom to the specific user location and show marker infoWindow
         long millis = mUserList.get(position).getsignUpDateMillis();
         double latitude = mUserList.get(position).getLatitude();
         double longitude = mUserList.get(position).getLongitude();
@@ -1020,7 +1021,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
-    public int getIndex(User user) {//get position of user in userlist after updating or removing user from firebase database 
+    public int getIndex(User user) {//get position of user in userlist after updating or removing user from firebase database
         int index = 0;
 
         for (User count_user: mUserList){
@@ -1128,22 +1129,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     @Override
-    public void onUserDeleteSuccess(String message, Class<?> classh) {//unregister coordinates receiver after successfully deleting account and finish the activity
-        try {
-            LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
-        }
-        Toasty.success(this, message,
-                Toast.LENGTH_SHORT).show();
-        editor_SignOut.putBoolean("signed_out", true);
-        editor_SignOut.apply();
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            super.finishAndRemoveTask();
-        }
-        else {
-            super.finish();
-        }
+    public void onUserDeleteSuccess(String message, Class<?> classh) {
+
     }
 
     @Override
@@ -1251,6 +1238,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             else {
                 super.finish();
             }
+            startActivity(new Intent(this, classh));
         }
     }
 

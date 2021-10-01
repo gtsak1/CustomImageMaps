@@ -235,7 +235,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
         changeCompassPosition(mMapView, this);
 
-        try {
+        try { //move camera accordingly to all users locations
             if (justSignedUp)
                 new Handler().postDelayed(() -> mGoogleMap.moveCamera(Objects.requireNonNull(ZoomBounds(this, mUserList, 80))), 4500);
             else
@@ -251,7 +251,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         }
 
-        sat.setOnClickListener(view -> {
+        sat.setOnClickListener(view -> {   //performing swap between 3 different map types and changing the markers' color accordingly
             //Creating the instance of PopupMenu for google map layers
             PopupMenu popup = new PopupMenu(this, sat);
             //Inflating the Popup using xml file
@@ -376,7 +376,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         return (super.onOptionsItemSelected(item));
     }
 
-    public void changeScreenProportion(View view, View view2) {
+    public void changeScreenProportion(View view, View view2) {   //resizing the screen views according to user's needs
         ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) view.getLayoutParams();
 
         params.height = isFullScreen ? 0 : ViewGroup.LayoutParams.MATCH_PARENT;
@@ -460,7 +460,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         ConfigChange();
 
     }
-    private void ConfigChange() {
+    private void ConfigChange() { //determine what happens when changing screen orientation. The screen must be split in two the same way in both cases(constraintlayout guidelines are used for that reason) 
         ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) con2.getLayoutParams();
         ConstraintLayout.LayoutParams params2 = (ConstraintLayout.LayoutParams) listes.getLayoutParams();
 
@@ -498,14 +498,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
-    void startLocService() {
+    void startLocService() {    //function that activates the location service
         IntentFilter filter = new IntentFilter("ACT_LOC");
-        registerReceiver(receiver, filter);
+        registerReceiver(receiver, filter);    //registering the coordinations receiver
         Intent intentSrv = new Intent(this, LocationService.class);
         startService(intentSrv);
     }
 
-    private void ConfirmDialog(int action, String title, String message) {
+    private void ConfirmDialog(int action, String title, String message) {     //dialog for updating user Visibility or deleteing account
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         final AlertDialog dial = builder.setMessage(message)
@@ -608,8 +608,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         else if (requestCode == SELECT_PHOTO && resultCode == RESULT_OK && data != null && data.getData() != null){
 
             try {
-                profileImageUri = data.getData();
-                setImage(this, profilePic, profileImageUri);
+                profileImageUri = data.getData();   //getting selected image file from storage and... 
+                setImage(this, profilePic, profileImageUri);//...applying it to imageview
                 remove_photo.setVisibility(View.VISIBLE);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -625,8 +625,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 Log.e(TAG, "uri: " + uri);
                 Log.e(TAG, "url: " + uri.toString());
 
-                profileImageUri = uri;
-                setImage(this, profilePic, profileImageUri);
+                profileImageUri = uri;  //getting camera captured image file and...
+                setImage(this, profilePic, profileImageUri);//...applying it to imageview
                 remove_photo.setVisibility(View.VISIBLE);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -753,7 +753,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             ShowUpdateDialog(mUserList.get(position));
     }
 
-    private void ShowUpdateDialog(User user) {
+    private void ShowUpdateDialog(User user) {  //Dialog for editing user's profile(photo, fullname, phone)
         String image_url, fname, lname, phonenum;
 
         image_url = user.getImage_Url();
@@ -809,7 +809,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         dial.show();
     }
 
-    private void DetailDialog(int position) {
+    private void DetailDialog(int position) { //shows a detailed dialog with each user's info(displayed either by clicking on marker infoWindow or on users list info button)
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         LayoutInflater inflater2 = getLayoutInflater();
@@ -826,7 +826,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         if (mUserList.get(position).getPhone() == null || mUserList.get(position).getPhone().equals(""))
             phone.setVisibility(View.GONE);
-        else
+        else                                     //using SpanTextView function to colour certain parts of text
             phone.setText(SpanTextView(getString(R.string.phone_number) + ": ", mUserList.get(position).getPhone(),
                     ContextCompat.getColor(this, R.color.colorPrimary), Color.BLACK));
 
@@ -847,7 +847,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         ImageView im1 = alertLayout.findViewById(R.id.gmaps_icon_direct); ImageView im2 = alertLayout.findViewById(R.id.gmaps_icon);
 
-        im1.setOnClickListener(v -> {
+        im1.setOnClickListener(v -> {   //get directions to user's current location
             String url = "http://maps.google.com/maps?daddr=" +
                     mUserList.get(position).getLatitude() + "," + mUserList.get(position).getLongitude() + "";
             Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(url));
@@ -855,7 +855,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 startActivity(intent);
         });
 
-        im2.setOnClickListener(v -> {
+        im2.setOnClickListener(v -> {  //show current location of user on google maps app
             String uri = "http://maps.google.com/maps?q=loc:" + mUserList.get(position).getLatitude() + "," + mUserList.get(position).getLongitude()
                     + " (" + mUserList.get(position).getfName() + " " + mUserList.get(position).getlName() + ")";
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
@@ -873,7 +873,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         dial.show();
     }
 
-    private void GlideForMarker(User user, boolean shouldUpdate, int updatePosition) {
+    //this function creates or updates custom bubble shaped map markers with user's image(image is set using Glide library)            
+    private void GlideForMarker(User user, boolean shouldUpdate, int updatePosition) { 
         try {
             Object image_url;
             String noImageText;
@@ -898,7 +899,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                                         .position(new LatLng(user.getLatitude(), user.getLongitude()))
                                         .icon(BitmapDescriptorFactory.fromBitmap(bmp))
                                         .title(user.getlName() + " " + user.getfName())
-                                        .visible(user.isVisible() && user.isLoggedIn())
+                                        .visible(user.isVisible() && user.isLoggedIn()) //marker is visible only if user is logged in and has set his state to visible
                                         .anchor(0.47f, 1f)
                                         .infoWindowAnchor(0.47f, 0.092f));
                                 m.setTag(user.getsignUpDateMillis()); //setting a unique tag for each marker, so that we are sure we don't choose wrong marker in any calculations made
@@ -933,10 +934,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             GlideForMarker(user, false, -1);//create icon etc
 
 
-            marker_arraylist_names.add(mGoogleMap.addMarker(new MarkerOptions()//create names
+            marker_arraylist_names.add(mGoogleMap.addMarker(new MarkerOptions()//create the user's name displayed below the bubble shaped marker
                     .position(new LatLng(user.getLatitude(), user.getLongitude()))
                     .anchor(0.5f, 0.15f)
-                    .visible(user.isVisible() && user.isLoggedIn())
+                    .visible(user.isVisible() && user.isLoggedIn()) //is visible only if user is logged in and has set his state to visible
                     .icon(createMarkerUserName(this, user.getlName() + " " + user.getfName().substring(0, 1) + ".",
                             mGoogleMap.getMapType() == GoogleMap.MAP_TYPE_HYBRID))));
         } catch (Exception e) {
@@ -944,7 +945,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
-    private void changeMarkerTextColor() {
+    private void changeMarkerTextColor() { //called when setting different map type(layer)
         if (mUserList != null && marker_arraylist_names != null) {
             for (int i = 0; i < mUserList.size(); i++) {
                 marker_arraylist_names.get(i).setIcon(createMarkerUserName(this, mUserList.get(i).getlName() + " " + mUserList.get(i).getfName().substring(0, 1) + ".",
@@ -953,7 +954,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
-    private void setMarkerSnippet(Marker m, User user) {
+    private void setMarkerSnippet(Marker m, User user) { //setting description for each marker(phone if user has entered one and address)
         if ((user.getPhone() == null || user.getPhone().equals("")) && !user.getAddress().equals(""))
             m.setSnippet(getString(R.string.address) + ": " + user.getAddress());
         else if (!(user.getPhone() == null || user.getPhone().equals("")) && user.getAddress().equals(""))
@@ -988,7 +989,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
-    private void ZoomInUser(int position) {
+    private void ZoomInUser(int position) {  //zoom to the specific user location and show marker infoWindow 
         long millis = mUserList.get(position).getsignUpDateMillis();
         double latitude = mUserList.get(position).getLatitude();
         double longitude = mUserList.get(position).getLongitude();
@@ -1019,7 +1020,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
-    public int getIndex(User user){
+    public int getIndex(User user) {//get position of user in userlist after updating or removing user from firebase database 
         int index = 0;
 
         for (User count_user: mUserList){
@@ -1047,7 +1048,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     @Override
-    public void onUserSendClick(int position) {
+    public void onUserSendClick(int position) {//creates an ACTION_SEND intent to share user info
         /*This will be the actual content we will share.*/
         String phone = mUserList.get(position).getPhone();
         if (mUserList.get(position).getPhone() == null)
@@ -1072,7 +1073,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     @Override
-    public void onUserContactClick(int position) {
+    public void onUserContactClick(int position) {//displays dialog for communicating(mail and/or phone) with specified user
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         LayoutInflater inflater2 = getLayoutInflater();
@@ -1110,7 +1111,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     @Override
-    public void onUserZoomOutClick(int position) {
+    public void onUserZoomOutClick(int position) {//zooms out with animation accordingly to all users locations
         try {
             mGoogleMap.animateCamera(Objects.requireNonNull(ZoomBounds(this, mUserList, 82)), 1500, null);
             ConstraintLayout.LayoutParams params2 = (ConstraintLayout.LayoutParams) listes.getLayoutParams();
@@ -1127,7 +1128,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     @Override
-    public void onUserDeleteSuccess(String message, Class<?> classh) {
+    public void onUserDeleteSuccess(String message, Class<?> classh) {//unregister coordinates receiver after successfully deleting account and finish the activity
         try {
             LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
         } catch (IllegalStateException e) {
@@ -1235,7 +1236,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     @Override
-    public void onUserLoginStatusUpdate(boolean loggedIn, Class<?> classh) {
+    public void onUserLoginStatusUpdate(boolean loggedIn, Class<?> classh) {//unregister coordinates receiver after successfully logging out user and finish the activity
         if (!loggedIn) {
             try {
                 LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);

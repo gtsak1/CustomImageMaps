@@ -11,19 +11,10 @@ public class User implements Serializable {
     public String fName;
     public String lName;
     public String phone;
-    public long signUpDateMillis;
     public String image_Url;
     public Uri image_Uri;
     public boolean visible;
     public boolean isLoggedIn;
-
-    public long getsignUpDateMillis() {
-        return signUpDateMillis;
-    }
-
-    public void setsignUpDateMillis(long signUpDateMillis) {
-        this.signUpDateMillis = signUpDateMillis;
-    }
 
     public int markerRandomColor;
     public double latitude;
@@ -87,14 +78,13 @@ public class User implements Serializable {
         this.image_Uri = image_Uri;
     }
 
-    public User(String id, String email, String fName, String lName, String phone, long signUpDateMillis, String image_Url, double latitude, double longitude, String address,
+    public User(String id, String email, String fName, String lName, String phone, String image_Url, double latitude, double longitude, String address,
                 boolean visible, boolean isLoggedIn, int markerRandomColor) {
         this.id = id;
         this.email = email;
         this.fName = fName;
         this.lName = lName;
         this.phone = phone;
-        this.signUpDateMillis = signUpDateMillis;
         this.image_Url = image_Url;
         this.latitude = latitude;
         this.longitude = longitude;

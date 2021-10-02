@@ -74,7 +74,7 @@ public class UserInteractor implements UserContract.Interactor {
                                 mListener.onUploadEnd();
                                 fileRef.getDownloadUrl()
                                     .addOnSuccessListener(uri -> {
-                                        User user2 = new User(id, user_auth.getEmail(), user.getfName(), user.getlName(), user.getPhone(), System.currentTimeMillis(), uri.toString(),
+                                        User user2 = new User(id, user_auth.getEmail(), user.getfName(), user.getlName(), user.getPhone(), uri.toString(),
                                                 0, 0,"",true, true, user.getMarkerRandomColor());
 
                                         reference.child(Objects.requireNonNull(id)).setValue(user2).addOnCompleteListener(task2 -> {
@@ -102,7 +102,7 @@ public class UserInteractor implements UserContract.Interactor {
                         }
 
                         else {
-                            User user2 = new User(id, user_auth.getEmail(), user.getfName(), user.getlName(), user.getPhone(), System.currentTimeMillis(), null, 0, 0,
+                            User user2 = new User(id, user_auth.getEmail(), user.getfName(), user.getlName(), user.getPhone(), null, 0, 0,
                                     "", true, true, user.getMarkerRandomColor());
 
                             reference.child(Objects.requireNonNull(id)).setValue(user2).addOnCompleteListener(task2 -> {

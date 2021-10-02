@@ -288,7 +288,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mGoogleMap.setOnInfoWindowClickListener(marker -> {
             int position = -1;
             for (int i=0; i<mUserList.size(); i++)
-                if (mUserList.get(i).getsignUpDateMillis() == (long) marker.getTag()) {
+                if (mUserList.get(i).getId().equals(marker.getTag())) {
                     position = i;
                     break;
                 }
@@ -903,7 +903,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                                         .visible(user.isVisible() && user.isLoggedIn()) //marker is visible only if user is logged in and has set his state to visible
                                         .anchor(0.47f, 1f)
                                         .infoWindowAnchor(0.47f, 0.092f));
-                                m.setTag(user.getsignUpDateMillis()); //setting a unique tag for each marker, so that we are sure we don't choose wrong marker in any calculations made
+                                m.setTag(user.getId()); //setting a unique tag for each marker(userId), so that we are sure we don't choose wrong marker in any calculations made
                                 setMarkerSnippet(m, user);
                                 marker_arraylist.add(m);
                             }
@@ -967,7 +967,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private void UpdateOrRemoveMarker(User user, boolean shouldUpdate) {
         try {
             for (int i=0; i<marker_arraylist.size(); i++)
-                if (user.getsignUpDateMillis() == (long) marker_arraylist.get(i).getTag()) {
+                if (user.getId().equals(marker_arraylist.get(i).getTag())) {
                     if (shouldUpdate) {//update marker
                         GlideForMarker(user, true, i);//update icon etc
 
@@ -991,12 +991,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     private void ZoomInUser(int position) {  //zoom to the specific user location and show marker infoWindow
-        long millis = mUserList.get(position).getsignUpDateMillis();
         double latitude = mUserList.get(position).getLatitude();
         double longitude = mUserList.get(position).getLongitude();
 
         for (int j=0; j<marker_arraylist.size(); j++){
-            if ((long) marker_arraylist.get(j).getTag() == millis) {
+            if (mUserList.get(position).getId().equals(marker_arraylist.get(j).getTag())) {
                 if (marker_arraylist.get(j).isVisible()) {
                     marker_arraylist.get(j).showInfoWindow();
                     mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude)

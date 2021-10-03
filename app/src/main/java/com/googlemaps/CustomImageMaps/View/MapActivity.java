@@ -537,7 +537,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 requestLocationPermission();
             } else
-                NoAcception(this);
+                NoAcception(this, true);
         }
 
         else if (requestCode == REQUEST_STORAGE){
@@ -545,7 +545,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 PhotoPermissions(this);
             }
             else
-                NoAcception(this);
+                NoAcception(this, false);
         }
 
         else if (requestCode == REQUEST_CAMERA){
@@ -553,7 +553,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 imageFileName_N_extens = CameraPermissions(this); //fileName and extension of the captured image
             }
             else
-                NoAcception(this);
+                NoAcception(this, false);
         }
     }
 
@@ -595,7 +595,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     break;
                 }
                 case Activity.RESULT_CANCELED: {
-                    NoAcception(this);
+                    NoAcception(this, true);
                     // The user was asked to change settings, but chose not to
                     break;
                 }

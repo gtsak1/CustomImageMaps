@@ -218,7 +218,7 @@ public class SignUp extends AppCompatActivity implements UserContract.View, Bott
                 PhotoPermissions(this);
             }
             else
-                NoAcception(this);
+                NoAcception(this, false);
         }
 
         else if (requestCode == REQUEST_CAMERA){
@@ -226,7 +226,7 @@ public class SignUp extends AppCompatActivity implements UserContract.View, Bott
                 imageFileName_N_extens = CameraPermissions(this); //fileName and extension of the captured image
             }
             else
-                NoAcception(this);
+                NoAcception(this, false);
         }
 
     }

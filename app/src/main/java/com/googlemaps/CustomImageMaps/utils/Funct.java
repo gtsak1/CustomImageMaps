@@ -244,12 +244,17 @@ public class Funct {
         a.overridePendingTransition(0, 0);
     }
 
-    public static void NoAcception(Context cx){
-        AlertDialog.Builder builder = new AlertDialog.Builder(cx);
+    public static void NoAcception(Activity act, boolean finishActivity){
+        AlertDialog.Builder builder = new AlertDialog.Builder(act);
 
         //Setting message manually and performing action on button click
         final AlertDialog dial = builder.setMessage(R.string.not_completed_message)
-                .setPositiveButton(R.string.ok, (DialogInterface.OnClickListener) (dialog, id) -> dialog.dismiss())
+                .setCancelable(!finishActivity)
+                .setPositiveButton(R.string.ok, (dialogInterface, i) -> {
+                    dialogInterface.dismiss();
+                    if (finishActivity)
+                        act.finish();
+                })
                 .setTitle(R.string.rights_error)
                 .create();
 

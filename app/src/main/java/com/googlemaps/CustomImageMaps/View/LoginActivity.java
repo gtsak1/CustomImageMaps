@@ -182,20 +182,24 @@ public class LoginActivity extends AppCompatActivity  implements UserContract.Vi
 
     @Override
     public void ongetUser(User user) {
-        mPresenter.UpdateUserLoginStatus(this, mReference, user.getId(), true, mAuth);
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            super.finishAndRemoveTask();
+        if (!user.isLoggedIn()) {
+            mPresenter.UpdateUserLoginStatus(this, mReference, user.getId(), true, mAuth);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                super.finishAndRemoveTask();
+            } else {
+                super.finish();
+            }
+            SharedPreferences.Editor editor_SignOut = sharedPrefSignOut.edit();
+            editor_SignOut.putBoolean("signed_out", false);
+            editor_SignOut.apply();
+            Intent myIntent;
+            myIntent = new Intent(this, intentClass);
+            myIntent.putExtra("user", user);
+            startActivity(myIntent);
         }
-        else {
-            super.finish();
-        }
-        SharedPreferences.Editor editor_SignOut = sharedPrefSignOut.edit();
-        editor_SignOut.putBoolean("signed_out", false);
-        editor_SignOut.apply();
-        Intent myIntent;
-        myIntent = new Intent(this, intentClass);
-        myIntent.putExtra("user", user);
-        startActivity(myIntent);
+        else
+            Toast.makeText(this, getString(R.string.user_already_signedIn),
+                    Toast.LENGTH_SHORT).show();
     }
 
     @Override
